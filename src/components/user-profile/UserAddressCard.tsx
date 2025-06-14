@@ -6,13 +6,13 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import { useUpdateSeller } from "@/hooks/useUpdateSeller";
 import { useAuthStore } from "@/stores/authStore";
 import { FiEdit2 } from "react-icons/fi";
+import { useUpdateEntity } from "@/hooks/useUpdateEntity";
 
 export default function UserPassportInfoCard({ seller }: { seller: any }) {
   const { isOpen, openModal, closeModal } = useModal();
-  const { mutate } = useUpdateSeller();
+  const { mutate } = useUpdateEntity();
   const { setSeller } = useAuthStore();
 
   const [form, setForm] = useState({
@@ -32,15 +32,15 @@ export default function UserPassportInfoCard({ seller }: { seller: any }) {
     e.preventDefault();
         const { id, phone, forbid_login, _, status, b2b_user_id, created_at, last_login_at, ...rest } = seller;
 
-    mutate(
-      { id, data: { ...rest, ...form } },
-      {
-        onSuccess: ({ data }) => {
-          setSeller(data);
-          closeModal();
-        },
-      }
-    );
+    // mutate(
+    //   { id, data: { ...rest, ...form } },
+    //   {
+    //     onSuccess: ({ data }) => {
+    //       setSeller(data);
+    //       closeModal();
+    //     },
+    //   }
+    // );
   };
 
   return (
@@ -56,13 +56,24 @@ export default function UserPassportInfoCard({ seller }: { seller: any }) {
               <Info label="Passport No" value={seller.passport_no} />
               <Info label="JSHSHIR" value={seller.jshshir} />
               <Info label="Register Date" value={seller.register_date} />
-              <Info label="Registered Passport No" value={seller.register_passport_no} />
+              {/* <Info label="Registered Passport No" value={seller.register_passport_no} /> */}
             </div>
           </div>
 
-          <Button onClick={openModal} size="sm" variant="custom" className="bg-[#fd521c] text-white border-[#fd521c] hover:bg-[#e64816]">
-            <FiEdit2 /> Edit
-          </Button>
+     <Button
+  variant="custom"
+  size="sm"
+  onClick={seller.status === 3 ? openModal : undefined}
+  disabled={seller.status !== 3}
+  className={`border ${
+    seller.status === 3
+      ? "bg-[#fd521c] text-white hover:bg-[#e64816] border-[#fd521c]"
+      : "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300"
+  }`}
+>
+  <FiEdit2 /> Edit
+</Button>
+
         </div>
       </div>
 

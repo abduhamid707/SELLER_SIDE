@@ -9,13 +9,11 @@ interface AuthPayload {
 }
 
 export const register = async (data: AuthPayload) => {
-console.log('data :', data);
   const res = await BaseUrl.post("/sellers", data);
   return res.data;
 };
 
 export const login = async (data: AuthPayload) => {
-console.log('data :', data);
   const res = await BaseUrl.post("/sellers/login", data);
   return res.data;
 };

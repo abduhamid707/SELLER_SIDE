@@ -4,8 +4,6 @@ import { useAuthStore } from "@/stores/authStore";
 
 export const getNotifications = async () => {
   const { seller, token } = useAuthStore.getState(); // ✅ Zustand'dan olinadi
-  console.log('token :', token);
-  console.log('seller :', seller);
 
   if (!seller || !token) {
     console.warn("⚠️ Seller yoki token mavjud emas.");

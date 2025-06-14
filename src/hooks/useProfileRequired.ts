@@ -6,11 +6,10 @@ export const useProfileRequired = () => {
   if (!seller) return false;
 
   const requiredFields = [
-    seller.first_name,
-    seller.address,
-    seller.passport_no,
-    seller.email,
+    seller.passport_serial_no,
   ];
 
-  return requiredFields.every(Boolean); // barchasi bor bo‘lsa true
+  const isProfileComplete = requiredFields.every(Boolean);
+
+  return seller.status === 3 && isProfileComplete;
 };
