@@ -14,6 +14,7 @@ interface MutationArgs<T> {
   id: number;
   params: T;
   old_params: T;
+  seller_id: number;
 }
 
 export const useUpdateEntity = <T>() => {

@@ -23,7 +23,7 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       seller: null,
       setAuth: (token, seller) => set({ token, seller }),
-      setSeller: (seller) => set({ seller }), // 🔥 SHU YANGI QO‘SHILDI
+      setSeller: (seller) => set({ seller }), 
       clearAuth: () => set({ token: null, seller: null }),
     }),
     {

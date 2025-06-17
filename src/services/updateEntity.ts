@@ -10,9 +10,10 @@ type UpdateType =
 
 interface UpdateEntityPayload<T> {
   type: UpdateType;
-  id: number;
+  id?: number | null;
   params: T;
-  old_params: T;
+  old_params: T | null;
+  seller_id: number;
 }
 
 export const updateEntity = async <T>({
@@ -20,6 +21,7 @@ export const updateEntity = async <T>({
   id,
   params,
   old_params,
+  seller_id,
 }: UpdateEntityPayload<T>): Promise<any> => {
   const idMap: Record<UpdateType, string> = {
     shops: "shop_id",
@@ -30,14 +32,15 @@ export const updateEntity = async <T>({
   };
 
   const dynamicIdField = idMap[type];
-  console.log('dynamicIdField :', dynamicIdField);
 
   const payload: any = {
     params,
     old_params,
     [dynamicIdField]: id,
+    seller_id,
   };
-  console.log('payload :', payload);
+
+  console.log("payload:", payload);
 
   const res = await BaseUrl.post(`/seller/modiratings/update`, payload, {
     headers: {
@@ -45,6 +48,6 @@ export const updateEntity = async <T>({
     },
   });
 
-  console.log('res.data :', res.data);
+  console.log("res.data:", res.data);
   return res.data;
 };

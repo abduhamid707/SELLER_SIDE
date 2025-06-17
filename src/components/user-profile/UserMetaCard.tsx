@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
 import Image from "next/image";
 import { FiEdit2 } from "react-icons/fi";
 import { useUpdateEntity } from "@/hooks/useUpdateEntity";
@@ -39,23 +37,23 @@ export default function UserMetaCard({ seller }: { seller: any }) {
     card_holder: "",
   });
 
-const validateField = (name: string, value: string) => {
-  try {
-    sellerSchema.pick({ [name]: true }).parse({ [name]: value });
-    setFormErrors((prev) => ({ ...prev, [name]: "" })); // ✅ Xato yo‘q bo‘lsa tozalaymiz
-  } catch (error: any) {
-    if (error?.errors?.[0]?.message) {
-      setFormErrors((prev) => ({ ...prev, [name]: error.errors[0].message }));
+  const validateField = (name: string, value: string) => {
+    try {
+      sellerSchema.pick({ [name]: true }).parse({ [name]: value });
+      setFormErrors((prev) => ({ ...prev, [name]: "" })); // ✅ Xato yo‘q bo‘lsa tozalaymiz
+    } catch (error: any) {
+      if (error?.errors?.[0]?.message) {
+        setFormErrors((prev) => ({ ...prev, [name]: error.errors[0].message }));
+      }
     }
-  }
-};
+  };
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-  setFormState((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormState((prev) => ({ ...prev, [name]: value }));
 
-  validateField(name, value); // ✅ Real-time validatsiya
-};
+    validateField(name, value); // ✅ Real-time validatsiya
+  };
 
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -70,6 +68,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       const cleanedParams = cleanObject(validatedData, keysToRemove) as SellerForm;
       const cleanedOldParams = cleanObject(seller, keysToRemove) as SellerForm;
+console.log(seller.id);
 
       mutate(
         {
@@ -80,6 +79,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         },
         {
           onSuccess: () => {
+            console.log(1);
+            
             closeModal();
             setStep(1);
           },

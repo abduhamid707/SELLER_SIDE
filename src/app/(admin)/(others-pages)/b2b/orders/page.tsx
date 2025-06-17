@@ -1,11 +1,21 @@
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import React from "react";
+"use client";
 
-export default function B2BAccountPage() {
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import ProtectedB2BRoute from "@/components/auth/ProtectedB2BRoute";
+import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+// import { useB2BOrders } from "@/hooks/b2b/useB2BOrders";
+import React from "react";
+import B2bClient from "@/components/b2b/B2bClient";
+
+export default function B2BOrdersPage() {
+ 
+
     return (
-        <div>
-            <PageBreadcrumb pageTitle="B2B Buyurtmalar" />
-            <p>B2B Buyurtmalar sahifasi</p>
-        </div>
+        <ProtectedRoute>
+            <ProtectedB2BRoute>
+                <PageBreadcrumb pageTitle="B2B Buyurtmalar" />
+                <B2bClient />
+            </ProtectedB2BRoute>
+        </ProtectedRoute>
     );
 }

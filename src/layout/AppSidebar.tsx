@@ -17,7 +17,7 @@ import {
   TableIcon,
   UserCircleIcon,
 } from "../icons/index";
-import { BellIcon, StoreIcon } from "lucide-react";
+import { BellIcon, Boxes, StoreIcon } from "lucide-react";
 import { Building2 } from "lucide-react";
 
 import SidebarWidget from "./SidebarWidget";
@@ -40,10 +40,15 @@ const navItems: NavItem[] = [
     name: "Calendar",
     path: "/calendar",
   },
-    {
-    icon: <StoreIcon  />,
+  {
+    icon: <StoreIcon />,
     name: "Do'konlar",
     path: "/shops",
+  },
+  {
+    icon: <Boxes size={18} />,
+    name: "Mahsulotlar",
+    path: "/products",
   },
   {
     icon: <UserCircleIcon />,

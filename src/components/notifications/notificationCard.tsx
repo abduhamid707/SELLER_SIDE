@@ -1,4 +1,3 @@
-// components/notifications/notificationCard.tsx
 import React from "react";
 import { useApproveNotification } from "@/hooks/useNotifications";
 
@@ -21,26 +20,29 @@ export const ProductNotificationCard = ({ item }: { item: any }) => {
       ? "bg-red-100 text-red-700"
       : "bg-yellow-100 text-yellow-700";
 
+  const product = item.params || {};
+  const productName = product.name_uz || "Nomsiz mahsulot";
+  const productDetails = product.details_uz || "Tavsifi yo‘q";
+  const productImage = product.images?.[0] || "/assets/product-placeholder.png";
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
       <div className="flex justify-between items-start gap-4">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-800">{item.title || "Mahsulot nomi"}</h3>
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-            {item.description || "Tavsifi yo‘q"}
-          </p>
+          <h3 className="text-lg font-semibold text-gray-800">{productName}</h3>
+          <p className="text-sm text-gray-600 mt-1 line-clamp-2">{productDetails}</p>
           <div className={`inline-block px-3 py-1 mt-3 rounded-full text-xs font-medium ${statusColor}`}>
             {status}
           </div>
         </div>
         <img
-          src={item.image || "/assets/product-placeholder.png"}
+          src={productImage}
           alt="Rasm"
           className="w-20 h-20 object-cover rounded-lg border"
         />
       </div>
 
-      {item.status === 0 && (
+      {item.status === 3 && (
         <div className="flex gap-2 mt-5">
           <button
             onClick={handleApprove}
