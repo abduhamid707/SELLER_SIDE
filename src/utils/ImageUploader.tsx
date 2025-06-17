@@ -12,14 +12,12 @@ type Props = {
 
 export const ImageUploader = ({ onSuccess, initialUrls = [] }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<string[]>(initialUrls);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
     const validImages: File[] = [];
-    const previewUrls: string[] = [];
 
     for (const file of selectedFiles) {
       const isImage = file.type.startsWith("image/");
@@ -36,22 +34,20 @@ export const ImageUploader = ({ onSuccess, initialUrls = [] }: Props) => {
       }
 
       validImages.push(file);
-      previewUrls.push(URL.createObjectURL(file));
     }
 
-    setFiles((prev) => [...prev, ...validImages]);
-    setPreviews((prev) => [...prev, ...previewUrls]);
+    if (validImages.length > 0) {
+      uploadImmediately(validImages);
+    }
   };
 
-  const handleUpload = async () => {
+  const uploadImmediately = async (filesToUpload: File[]) => {
     setUploading(true);
     try {
-      const { data } = await uploadImages(files);
-      const allUrls = [...initialUrls, ...data];
+      const { data } = await uploadImages(filesToUpload);
+      const allUrls = [...previews, ...data];
       setPreviews(allUrls);
-      setFiles([]);
       onSuccess(allUrls);
-      alert("Rasmlar yuklandi!");
     } catch (error) {
       console.error("Yuklashda xatolik:", error);
       alert("Rasmlarni yuklashda xatolik yuz berdi.");
@@ -72,7 +68,7 @@ export const ImageUploader = ({ onSuccess, initialUrls = [] }: Props) => {
 
   return (
     <div className="space-y-4">
-      {/* Custom file uploader button */}
+      {/* File uploader button */}
       <div>
         <input
           ref={fileInputRef}
@@ -123,16 +119,9 @@ export const ImageUploader = ({ onSuccess, initialUrls = [] }: Props) => {
         ))}
       </div>
 
-      {/* Upload Button – only show if NEW files are selected */}
-      {files.length > 0 && (
-        <button
-          type="button"
-          onClick={handleUpload}
-          disabled={uploading}
-          className="bg-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:bg-orange-600 disabled:opacity-50"
-        >
-          {uploading ? "Yuklanmoqda..." : "Yuborish"}
-        </button>
+      {/* Yuklanmoqda indication (optional) */}
+      {uploading && (
+        <p className="text-sm text-gray-500">Yuklanmoqda...</p>
       )}
     </div>
   );
