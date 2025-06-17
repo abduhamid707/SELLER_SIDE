@@ -8,11 +8,16 @@ import { PlusIcon } from "lucide-react";
 import SkeletonCard from "../ui/spinner/SkeletonCard";
 import { useB2BOrders } from "@/hooks/b2b/useB2B";
 import B2BOrderCard from "./B2BOrderCard";
+import ProductCreateModal from "../products/ProductCreateModal";
 
 export default function B2bClient() {
+
+
     const { seller } = useAuthStore();
     const { data, isLoading, error } = useB2BOrders();
-    console.log('data :', data);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedB2BProduct, setSelectedB2BProduct] = useState<any>(null);
 
     if (!seller) return null;
 
@@ -28,16 +33,39 @@ export default function B2bClient() {
                 <p className="text-sm text-gray-500 dark:text-gray-400">Buyurtmalar topilmadi.</p>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {data.data.map((order) => (
+                    {data?.data?.map((order) => (
                         <B2BOrderCard
-                            key={order.id}
                             order={order}
-                            onEdit={() => console.log("Edit order", order)}
+                            onEdit={(order) => {
+                                setSelectedB2BProduct({
+                                    productNameUz: order.name,
+                                    productNameRu: "",
+                                    productPrice: String(order.price),
+                                    productCount: String(order.quantity),
+                                    productDescUz: "",
+                                    productDescRu: "",
+                                    productTerm: "0",
+                                    productDiscounted: "0",
+                                    productSubCategory: "",
+                                    productShopId: "",
+                                    productTags: [],
+                                    images: order.sku_info.imgs?.length ? order.sku_info.imgs : [order.sku_info.sku_img],
+                                });
+                                setIsModalOpen(true);
+                            }}
                         />
+
                     ))}
                 </div>
             )}
 
+            {isModalOpen && (
+                <ProductCreateModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    initialData={selectedB2BProduct}
+                />
+            )}
 
         </div>
     );

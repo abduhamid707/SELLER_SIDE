@@ -10,11 +10,19 @@ type UpdateType =
 
 interface UpdateEntityPayload<T> {
   type: UpdateType;
-  id?: number | null;
+  id: number;
   params: T;
-  old_params: T | null;
+  old_params?: T | null;
   seller_id: number;
 }
+
+const typeToIdKey: Record<UpdateType, string> = {
+  shops: "shop_id",
+  product: "product_id",
+  "product-sku": "product_sku_id",
+  seller: "seller_id",
+  "comment-order": "comment_order_id",
+};
 
 export const updateEntity = async <T>({
   type,
@@ -23,24 +31,17 @@ export const updateEntity = async <T>({
   old_params,
   seller_id,
 }: UpdateEntityPayload<T>): Promise<any> => {
-  const idMap: Record<UpdateType, string> = {
-    shops: "shop_id",
-    product: "product_id",
-    "product-sku": "product_sku_id",
-    seller: "seller_id",
-    "comment-order": "comment_order_id",
-  };
+  const idField = typeToIdKey[type];
 
-  const dynamicIdField = idMap[type];
-
-  const payload: any = {
+  const payload: Record<string, any> = {
+    [idField]: id,
     params,
-    old_params,
-    [dynamicIdField]: id,
     seller_id,
   };
 
-  console.log("payload:", payload);
+  if (old_params) {
+    payload.old_params = old_params;
+  }
 
   const res = await BaseUrl.post(`/seller/modiratings/update`, payload, {
     headers: {
@@ -48,6 +49,5 @@ export const updateEntity = async <T>({
     },
   });
 
-  console.log("res.data:", res.data);
   return res.data;
 };

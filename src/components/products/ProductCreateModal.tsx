@@ -12,6 +12,7 @@ import Label from "@/components/form/Label";
 import { useCategories, useSubCategories } from "@/hooks/category/useCategories";
 import { useProductTags } from "@/hooks/tag/useProductTags";
 import { productSchema } from "@/schemas/sellerSchema";
+import { useShopsBySellerId } from "@/hooks/useShopsBySellerId";
 
 type ProductFormState = {
     productNameUz: string;
@@ -30,15 +31,16 @@ type ProductFormState = {
 export default function ProductCreateModal({
     isOpen,
     onClose,
-    shop,
+    initialData,
 }: {
     isOpen: boolean;
     onClose: () => void;
-        shop: any;
-    }) {
-        const { seller } = useAuthStore();
-        console.log('shops :', shop);
-   
+    initialData?: Partial<ProductFormState> & { images?: string[] };
+}) {
+    const { seller } = useAuthStore();
+    const sellerId = seller?.id;
+    const { data: shop = [] } = useShopsBySellerId(sellerId.toString());
+
     const [step, setStep] = useState(1);
     const [formState, setFormState] = useState<ProductFormState>({
         productNameUz: "",
@@ -61,6 +63,18 @@ export default function ProductCreateModal({
     const { subCategories } = useSubCategories(formState.productCategory);
     const { tags: tagOptionsRaw } = useProductTags();
 
+    useEffect(() => {
+        if (initialData) {
+            setFormState((prev) => ({
+                ...prev,
+                ...initialData,
+            }));
+
+            if (initialData.images) {
+                setImages(initialData.images);
+            }
+        }
+    }, [initialData]);
 
 
     // Format tag options
@@ -85,10 +99,10 @@ export default function ProductCreateModal({
         value: sub.id,
         label: Array.isArray(sub.name) ? sub.name[0]?.split(":")[1] : sub.name,
     }));
-const shopOptions = (shop ?? []).map((shop) => ({
-  label: shop.name,
-  value: shop.id.toString(), // string format — zod bilan mos
-}));
+    const shopOptions = (shop ?? []).map((shop) => ({
+        label: shop.name,
+        value: shop.id.toString(), // string format — zod bilan mos
+    }));
 
 
     const { mutate: createProductMutate, isLoading } = useCreateProduct();
@@ -138,7 +152,7 @@ const shopOptions = (shop ?? []).map((shop) => ({
             details_uz: formState.productDescUz,
             details_ru: formState.productDescRu,
             guaranty_time: Number(formState.productTerm),
-            discounted_price:Number(formState.productDiscounted),
+            discounted_price: Number(formState.productDiscounted),
             category_id: Number(formState.productSubCategory),
             shop_id: Number(formState.productShopId),
             tags: formState.productTags,
@@ -251,18 +265,18 @@ const shopOptions = (shop ?? []).map((shop) => ({
                                     error={formErrors.productDescRu}
                                 />
                             </div>
-<div className="col-span-1">
-  <Label>Do‘kon tanlang</Label>
-  <Select
-    options={shopOptions}
-    value={formState.productShopId}
-    onChange={(val) => {
-      setFormState((prev) => ({ ...prev, productShopId: val }));
-      validateField("productShopId", val);
-    }}
-    error={formErrors.productShopId}
-  />
-</div>
+                            <div className="col-span-1">
+                                <Label>Do‘kon tanlang</Label>
+                                <Select
+                                    options={shopOptions}
+                                    value={formState.productShopId}
+                                    onChange={(val) => {
+                                        setFormState((prev) => ({ ...prev, productShopId: val }));
+                                        validateField("productShopId", val);
+                                    }}
+                                    error={formErrors.productShopId}
+                                />
+                            </div>
 
                             <div className="col-span-1">
                                 <Label>Kategoriya</Label>
@@ -309,7 +323,11 @@ const shopOptions = (shop ?? []).map((shop) => ({
                     {step === 3 && (
                         <div className="col-span-2">
                             <p className="text-sm font-medium mb-2 text-gray-700 dark:text-white">Rasmlar</p>
-                            <ImageUploader onSuccess={(urls) => setImages(urls)} />
+                            <ImageUploader
+  onSuccess={(urls) => setImages(urls)}
+  initialUrls={images} // yoki selectedB2BProduct?.images
+/>
+
                             {formErrors.images && (
                                 <p className="mt-1 text-sm text-red-500">{formErrors.images}</p>
                             )}

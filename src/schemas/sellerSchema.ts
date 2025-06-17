@@ -34,7 +34,11 @@ export const shopSchema = z.object({
 export const productSchema = z.object({
   productNameUz: z.string().min(2, "Mahsulot nomi (UZ) kamida 2 ta harfdan iborat bo‘lishi kerak."),
   productNameRu: z.string().min(2, "Mahsulot nomi (RU) kamida 2 ta harfdan iborat bo‘lishi kerak."),
-  productPrice: z.string().regex(/^\d+$/, "Narx faqat raqamlardan iborat bo‘lishi kerak."),
+  productPrice: z
+  .string()
+  .refine((val) => !isNaN(Number(val)), {
+    message: "Narx faqat raqam bo‘lishi kerak.",
+  }),
   productCount: z.string().regex(/^\d+$/, "Soni faqat raqamlardan iborat bo‘lishi kerak."),
   productDescUz: z.string().min(5, "Tavsif (UZ) juda qisqa."),
   productDescRu: z.string().optional(),

@@ -1,6 +1,6 @@
 'use client';
 
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, PlusCircle } from "lucide-react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
@@ -44,17 +44,13 @@ export default function B2BOrderCard({ order, onEdit }: B2BOrderCardProps) {
                 {images.map((img, i) => (
                     <SwiperSlide key={i}>
                         <div className="relative w-full h-full">
-                            {/* <Image
-                src={img}
-                alt={`Buyurtma rasm ${i + 1}`}
-                fill
-                className="object-cover"
-                    /> */}
-                            <img
+                            <Image
                                 src={img}
-                                alt="order image"
-                                className="w-full h-60 object-cover rounded-xl"
+                                alt={`Buyurtma rasm ${i + 1}`}
+                                fill
+                                className="object-cover"
                             />
+
                         </div>
                     </SwiperSlide>
                 ))}
@@ -63,17 +59,13 @@ export default function B2BOrderCard({ order, onEdit }: B2BOrderCardProps) {
             {/* Content */}
             <div className="p-4 space-y-3">
                 <div className="flex justify-between items-start gap-3">
-                    <a
-                        href={order.platform_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-lg font-semibold text-gray-800 dark:text-white/90 line-clamp-2 hover:underline"
-                    >
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 line-clamp-2 hover:underline">
                         {order.name}
-                    </a>
-                    <span className="inline-block bg-orange-100 text-orange-600 px-2 py-1 text-xs font-medium rounded-lg">
-                        ID: {order.id}
+                    </h3>
+                    <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-600 px-2 py-1 text-xs font-semibold rounded-lg">
+                        <span className="opacity-80">ID:</span> {order.id}
                     </span>
+
                 </div>
 
                 <div className="flex flex-wrap gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -107,8 +99,8 @@ export default function B2BOrderCard({ order, onEdit }: B2BOrderCardProps) {
                         onClick={() => onEdit?.(order)}
                         className="flex items-center px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-md transition"
                     >
-                        <PencilIcon size={14} className="mr-1" />
-                        Tahrirlash
+                        <PlusCircle size={14} className="mr-1" />
+                        Bozorga chiqarish
                     </button>
                 </div>
             </div>

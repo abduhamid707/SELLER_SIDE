@@ -12,10 +12,10 @@ export default function B2BOrdersPage() {
 
     return (
         <ProtectedRoute>
-            <ProtectedB2BRoute>
+            {/* <ProtectedB2BRoute> */}
                 <PageBreadcrumb pageTitle="B2B Buyurtmalar" />
                 <B2bClient />
-            </ProtectedB2BRoute>
+            {/* </ProtectedB2BRoute> */}
         </ProtectedRoute>
     );
 }

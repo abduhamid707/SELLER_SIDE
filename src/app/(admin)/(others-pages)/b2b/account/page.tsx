@@ -8,6 +8,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useB2BStore } from "@/stores/b2bStore";
 import { confirmB2BCode, registerB2B } from "@/services/b2b/b2bService";
 import { useRouter } from "next/navigation"; // ⬅️ import qo‘shiladi
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 export default function B2BAccountPage() {
   const [b2bId, setB2bId] = useState("");
@@ -49,58 +50,58 @@ export default function B2BAccountPage() {
   };
 
   return (
-    <div>
-      <PageBreadcrumb pageTitle="B2B Accountni ulash" />
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
-        <div className="max-w-md space-y-4">
-          {step === "initial" && (
-            <>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                B2B ID ni kiriting
-              </label>
-              <InputField
-                value={b2bId}
-                onChange={(e) => setB2bId(e.target.value)}
-                placeholder="B2B ID"
-                required
-              />
-              <Button onClick={handleRegister} disabled={loading}
-                variant="custom"
+      <ProtectedRoute>
+        <PageBreadcrumb pageTitle="B2B Accountni ulash" />
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
+          <div className="max-w-md space-y-4">
+            {step === "initial" && (
+              <>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  B2B ID ni kiriting
+                </label>
+                <InputField
+                  value={b2bId}
+                  onChange={(e) => setB2bId(e.target.value)}
+                  placeholder="B2B ID"
+                  required
+                />
+                <Button onClick={handleRegister} disabled={loading}
+                  variant="custom"
 
-                className="bg-[#fd521c] text-white hover:bg-[#e64816]"
-              >
-                {loading ? "Tekshirilmoqda..." : "Tasdiqlash"}
-              </Button>
-            </>
-          )}
+                  className="bg-[#fd521c] text-white hover:bg-[#e64816]"
+                >
+                  {loading ? "Tekshirilmoqda..." : "Tasdiqlash"}
+                </Button>
+              </>
+            )}
 
-          {step === "code" && (
-            <>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Telefoningizga kelgan kodni kiriting
-              </label>
-              <InputField
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="Tasdiqlash kodi"
-                required
-              />
-              <Button onClick={handleConfirm} disabled={loading}
-                variant="custom"
+            {step === "code" && (
+              <>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Telefoningizga kelgan kodni kiriting
+                </label>
+                <InputField
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="Tasdiqlash kodi"
+                  required
+                />
+                <Button onClick={handleConfirm} disabled={loading}
+                  variant="custom"
 
-                className="bg-[#fd521c] text-white hover:bg-[#e64816]"
+                  className="bg-[#fd521c] text-white hover:bg-[#e64816]"
 
-              >
-                {loading ? "Tasdiqlanmoqda..." : "Kod yuborish"}
-              </Button>
-            </>
-          )}
+                >
+                  {loading ? "Tasdiqlanmoqda..." : "Kod yuborish"}
+                </Button>
+              </>
+            )}
 
-          {message && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 pt-2">{message}</p>
-          )}
+            {message && (
+              <p className="text-sm text-gray-600 dark:text-gray-400 pt-2">{message}</p>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </ProtectedRoute>
   );
 }

@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 
 export default function NotificationPage() {
   return (
-    <div className="space-y-6">
-      <PageBreadcrumb pageTitle="Notifications" />
-      <NotificationsList />
-    </div>
+      <div className="space-y-6">
+        <PageBreadcrumb pageTitle="Notifications" />
+        <NotificationsList />
+      </div>
   );
 }

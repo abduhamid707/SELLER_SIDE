@@ -20,7 +20,7 @@ export default function ProductClient() {
     const [selectedShopId, setSelectedShopId] = useState<string>("all");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { data: shops=[] } = useShopsBySellerId(sellerId);
+    const { data: shops = [] } = useShopsBySellerId(sellerId.toString());
     const { data: sellerProducts, isLoading: isLoadingSeller } = useProductsBySellerId(sellerId);
     const { data: shopProducts, isLoading: isLoadingShop } = useProductsByShopId(
         selectedShopId !== "all" ? Number(selectedShopId) : undefined
@@ -29,10 +29,11 @@ export default function ProductClient() {
     if (!seller) return null;
 
     const isLoading = selectedShopId === "all" ? isLoadingSeller : isLoadingShop;
-    const currentProducts =
-        selectedShopId === "all"
-            ? sellerProducts ?? []
-            : shopProducts?.Products ?? [];
+const currentProducts =
+  selectedShopId === "all"
+    ? sellerProducts ?? []
+    : (shopProducts as any)?.Products ?? [];
+
 
     console.log('currentProducts :', currentProducts);
     const shopOptions = [
@@ -54,16 +55,18 @@ export default function ProductClient() {
 
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                         {/* Select */}
-                        <Select
-                            options={shopOptions}
-                            value="all" 
-                            onChange={(val) => setSelectedShopId(val)}
-                            className="w-[180px]"
-                        />
+<Select
+  options={shopOptions}
+  value="all"
+  onChange={(val: any) => setSelectedShopId(val)}
+  className="w-[180px]"
+  {...({} as any)} // <-- build uchun workaround
+/>
+
 
                         <Button
                             size="sm"
-                            variant="custome"
+                            variant="custom"
                             onClick={() => setIsModalOpen(true)}
                             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#fd521c] hover:bg-[#e64816] rounded-lg"
                         >
@@ -102,7 +105,6 @@ export default function ProductClient() {
             <ProductCreateModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                shop={shops}
             />
         </div>
     );

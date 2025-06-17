@@ -36,9 +36,10 @@ export function ProductCard({ product, onEdit }: any) {
           <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 line-clamp-2">
             {product.name_uz}
           </h4>
-          <span className="inline-block bg-orange-100 text-orange-600 px-2 py-1 text-xs font-medium rounded-lg">
-            ID: {product.id}
-          </span>
+    <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-600 px-2 py-1 text-xs font-semibold rounded-lg">
+  <span className="opacity-80">ID:</span> {product.id}
+</span>
+
         </div>
 
         <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">

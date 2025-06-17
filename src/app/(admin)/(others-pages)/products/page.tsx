@@ -1,3 +1,4 @@
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import ProductClient from "@/components/products/ProductClient";
 // import ProductClient from "@/components/products/ProductClient"; // agar mavjud bo‘lsa
@@ -12,8 +13,11 @@ export const metadata: Metadata = {
 export default function ProductPage() {
   return (
     <>
-      <PageBreadcrumb pageTitle="Mahsulotlar" />
-      <ProductClient />
+      <ProtectedRoute>
+        <PageBreadcrumb pageTitle="Mahsulotlar" />
+        <ProductClient />
+      </ProtectedRoute>
+
     </>
   );
 }

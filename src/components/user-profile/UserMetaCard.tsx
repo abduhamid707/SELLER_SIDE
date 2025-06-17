@@ -76,6 +76,7 @@ console.log(seller.id);
           id: seller.id,
           params: cleanedParams,
           old_params: cleanedOldParams,
+            seller_id: seller.id, 
         },
         {
           onSuccess: () => {

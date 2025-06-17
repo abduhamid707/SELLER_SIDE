@@ -1,3 +1,4 @@
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import ShopClient from "@/components/shops/ShopClient";
 import { Metadata } from "next";
@@ -8,9 +9,11 @@ export const metadata: Metadata = {
     description: "Bu sahifa orqali sellerlar o‘z do‘konlarini boshqarishi mumkin.",
 };
 export default function ShopPage() {
-    return (<>
-        <PageBreadcrumb pageTitle="Do'konlar" />
-        <ShopClient />
-    </>);
+    return (
+        <ProtectedRoute>
+            <PageBreadcrumb pageTitle="Do'konlar" />
+            <ShopClient />
+        </ProtectedRoute>
+    );
 }
 

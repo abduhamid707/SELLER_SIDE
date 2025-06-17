@@ -1,8 +1,11 @@
 import React from "react";
 
 interface PhoneInputProps {
-  value: string;
+  value?: string;
   onChange: (val: string) => void;
+  selectPosition?: string; // ✅ Yangi qo‘shildi
+  countries?: { code: string; label: string }[]; // ✅ Yangi qo‘shildi
+  placeholder?: string; // ✅ Yangi qo‘shildi
 }
 
 const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange }) => {
