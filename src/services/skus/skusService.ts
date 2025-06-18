@@ -1,8 +1,16 @@
 import BaseUrl from "../axios";
 
 export const createSkuProduct = async (data: any): Promise<any> => {
-console.log('data :', data);
     const res = await BaseUrl.post(`/seller/product-skus`, { ...data });
-    console.log('res.data :', res.data);
+    return res.data;
+};
+
+
+export const getProductSkus = async () => {
+    const res = await BaseUrl.get(`/seller/product-skus/all`);
+    return res.data;
+};
+export const getProductSkusByProductId = async (id) => {
+    const res = await BaseUrl.get(`/seller/product-skus/product/${id}`);
     return res.data;
 };
