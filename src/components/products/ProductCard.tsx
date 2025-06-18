@@ -20,7 +20,7 @@ export function ProductCard({ product, onEdit }: any) {
       {/* Swiper Image Carousel */}
       {/* Swiper Image Carousel */}
       {/* Image + Title Link */}
-      <Link href={`/product/skus/${product.id}`}>
+      <Link href={`/products/skus/${product.id}`}>
         <div className=" cursor-pointer">
           <Swiper
             pagination={{ clickable: true }}

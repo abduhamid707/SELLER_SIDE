@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'storage.abusahiy.uz',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'cloud.video.taobao.com',
         pathname: '/**',
       },
@@ -30,12 +35,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-   typescript: {
+  typescript: {
     ignoreBuildErrors: true, // 👈 SHU MUHIM!
   },
-eslint: {
-  ignoreDuringBuilds: true,
-},
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

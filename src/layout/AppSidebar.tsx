@@ -50,7 +50,7 @@ const navItems: NavItem[] = [
     name: "Mahsulotlar",
     subItems: [
       { name: "Barcha Mahsulotlar", path: "/products" },
-      { name: "SKUs", path: "/products/skus" },
+      // { name: "SKUs", path: "/products/skus" },
     ]
   },
   {
