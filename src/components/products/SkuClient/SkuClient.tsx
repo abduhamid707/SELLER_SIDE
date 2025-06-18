@@ -2,16 +2,13 @@
 
 import { useAuthStore } from "@/stores/authStore";
 import React, { useState } from "react";
-import { useProductSkus } from "@/hooks/skus/useSkus";
+import { useSkusByProductId } from "@/hooks/skus/useSkus";
 import Image from "next/image";
 import { PencilIcon, TrashIcon, EyeIcon } from "lucide-react";
-import Modal from "@/components/ui/modal";
-
-export default function SkusClient() {
+import { Modal } from "@/components/ui/modal";
+export default function SkusClient({ productId }) {
     const { seller } = useAuthStore();
-    const sellerId = seller?.id;
-
-    const { data, isLoading } = useProductSkus();
+    const { data, isLoading } = useSkusByProductId(productId);
     const skus = data?.data ?? [];
 
     const [previewImage, setPreviewImage] = useState<string | null>(null);

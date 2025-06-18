@@ -6,10 +6,10 @@ export const createSkuProduct = async (data: any): Promise<any> => {
 };
 
 
-export const getProductSkus = async () => {
-    const res = await BaseUrl.get(`/seller/product-skus/all`);
-    return res.data;
-};
+// export const getProductSkusBySellerId = async () => {
+//     const res = await BaseUrl.get(`/seller/product-skus/all`);
+//     return res.data;
+// };
 export const getProductSkusByProductId = async (id) => {
     const res = await BaseUrl.get(`/seller/product-skus/product/${id}`);
     return res.data;

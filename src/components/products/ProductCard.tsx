@@ -9,45 +9,52 @@ import { Pagination } from "swiper/modules";
 import { useState } from "react";
 import SkuCreateModal from "./SkuClient/SkuCreateModal";
 import { useAuthStore } from "@/stores/authStore";
+import Link from "next/link";
 
 export function ProductCard({ product, onEdit }: any) {
   const [isSkuModalOpen, setIsSkuModalOpen] = useState(false);
-      const { seller } = useAuthStore();
-      const sellerId = seller?.id;
+  const { seller } = useAuthStore();
+  const sellerId = seller?.id;
   return (
-    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+    <div className="relative rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
       {/* Swiper Image Carousel */}
       {/* Swiper Image Carousel */}
-      <div className="relative">
-        <Swiper
-          pagination={{ clickable: true }}
-          modules={[Pagination]}
-          className="w-full h-60 sm:h-64 rounded-t-2xl overflow-hidden"
-        >
-          {product.images?.map((img: string, i: number) => (
-            <SwiperSlide key={i}>
-              <div className="relative w-full h-full">
-                <Image
-                  src={img}
-                  alt={`Product image ${i + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      {/* Image + Title Link */}
+      <Link href={`/product/skus/${product.id}`}>
+        <div className=" cursor-pointer">
+          <Swiper
+            pagination={{ clickable: true }}
+            modules={[Pagination]}
+            className="w-full h-60 sm:h-64 rounded-t-2xl overflow-hidden"
+          >
+            {product.images?.map((img: string, i: number) => (
+              <SwiperSlide key={i}>
+                <div className="relative w-full h-full">
+                  <Image
+                    src={img}
+                    alt={`Product image ${i + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-        {/* Tahrirlash tugmasi yuqori o‘ngda */}
-        <button
-          onClick={() => onEdit?.(product)}
-          className="absolute top-0 right-0 z-10 p-3 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-md flex items-center transition"
-        >
-          <PencilIcon size={18} className="mr-1" />
+          {/* Tahrirlash tugmasi alohida qoladi */}
 
-        </button>
-      </div>
+        </div>
+      </Link>
+      <button
 
+        onClick={(e) => {
+          e.stopPropagation(); // ✅ Link ichidagi bubblingni to‘xtatish
+          onEdit?.(product);
+        }}
+        className="absolute top-0 right-0 z-10 p-3 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-md flex items-center transition"
+      >
+        <PencilIcon size={18} className="mr-1" />
+      </button>
 
       {/* Content */}
       <div className="p-4 space-y-3">

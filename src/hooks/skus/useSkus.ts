@@ -1,4 +1,4 @@
-import { createSkuProduct, getProductSkus, getProductSkusByProductId } from "@/services/skus/skusService";
+import { createSkuProduct, getProductSkusByProductId } from "@/services/skus/skusService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useCreateSkuProduct = () => {
@@ -6,12 +6,12 @@ export const useCreateSkuProduct = () => {
         mutationFn: createSkuProduct,
     });
 };
-export const useProductSkus = () => {
-    return useQuery({
-        queryKey: ["product-skus"],
-        queryFn: getProductSkus,
-    });
-};
+// export const useProductSkus = () => {
+//     return useQuery({
+//         queryKey: ["product-skus"],
+//         queryFn: getProductSkusByProductId,
+//     });
+// };
 
 export const useSkusByProductId = (productId: number | string) => {
     return useQuery({
