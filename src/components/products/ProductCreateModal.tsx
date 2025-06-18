@@ -13,6 +13,7 @@ import { useCategories, useSubCategories } from "@/hooks/category/useCategories"
 import { useProductTags } from "@/hooks/tag/useProductTags";
 import { productSchema } from "@/schemas/sellerSchema";
 import { useShopsBySellerId } from "@/hooks/useShopsBySellerId";
+import SkuCreateModal from "./SkuClient/SkuCreateModal";
 
 type ProductFormState = {
     productNameUz: string;
@@ -32,10 +33,12 @@ export default function ProductCreateModal({
     isOpen,
     onClose,
     initialData,
+    onProductCreated,
 }: {
     isOpen: boolean;
     onClose: () => void;
     initialData?: Partial<ProductFormState> & { images?: string[] };
+    onProductCreated?: (product: any) => void;
 }) {
     const { seller } = useAuthStore();
     const sellerId = seller?.id;
@@ -57,6 +60,9 @@ export default function ProductCreateModal({
     });
     const [images, setImages] = useState<string[]>([]);
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+    const [showSkuModal, setShowSkuModal] = useState(false);
+    const [createdProduct, setCreatedProduct] = useState<any>(null);
 
     const { categories } = useCategories();
 
@@ -160,9 +166,9 @@ export default function ProductCreateModal({
             seller_id: seller.id,
         };
 
-        console.log('payload :', payload);
         createProductMutate(payload, {
-            onSuccess: () => {
+            onSuccess: ({ data }) => {
+                if (onProductCreated) onProductCreated(data);
                 onClose();
                 setStep(1);
                 setFormState({
@@ -188,174 +194,183 @@ export default function ProductCreateModal({
     const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} className="max-w-[700px] m-4">
-            <form className="p-6" onSubmit={handleSubmit}>
-                <h4 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Mahsulot qo‘shish</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Step {step} of 3</p>
+        <>
+            <Modal isOpen={isOpen} onClose={onClose} className="max-w-[700px] m-4">
+                <form className="p-6" onSubmit={handleSubmit}>
+                    <h4 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Mahsulot qo‘shish</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Step {step} of 3</p>
 
-                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                    {step === 1 && (
-                        <>
-                            <InputBlock
-                                label="Mahsulot nomi (UZ)"
-                                name="productNameUz"
-                                value={formState.productNameUz}
-                                onChange={handleChange}
-                                error={formErrors.productNameUz}
-                            />
-                            <InputBlock
-                                label="Mahsulot nomi (RU)"
-                                name="productNameRu"
-                                value={formState.productNameRu}
-                                onChange={handleChange}
-                                error={formErrors.productNameRu}
-                            />
-                            <InputBlock
-                                label="Narxi"
-                                name="productPrice"
-                                value={formState.productPrice}
-                                onChange={handleChange}
-                                type="number"
-                                error={formErrors.productPrice}
-                            />
-                            <InputBlock
-                                label="Soni"
-                                name="productCount"
-                                value={formState.productCount}
-                                onChange={handleChange}
-                                type="number"
-                                error={formErrors.productCount}
-                            />
-                            <InputBlock
-                                label="Chegirma"
-                                name="productDiscounted"
-                                value={formState.productDiscounted}
-                                onChange={handleChange}
-                                type="number"
-                                error={formErrors.productDiscounted}
-                            />
-                            <InputBlock
-                                label="Kafolat muddati (oy)"
-                                name="productTerm"
-                                value={formState.productTerm}
-                                onChange={handleChange}
-                                type="number"
-                                error={formErrors.productTerm}
-                            />
-                        </>
-                    )}
-
-
-                    {step === 2 && (
-                        <>
-                            <div className="lg:col-span-2">
-                                <Label>Ta'rif (UZ)</Label>
-                                <TextArea
-                                    value={formState.productDescUz}
-                                    onChange={(value) => setFormState({ ...formState, productDescUz: value })}
-                                    error={formErrors.productDescUz}
+                    <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                        {step === 1 && (
+                            <>
+                                <InputBlock
+                                    label="Mahsulot nomi (UZ)"
+                                    name="productNameUz"
+                                    value={formState.productNameUz}
+                                    onChange={handleChange}
+                                    error={formErrors.productNameUz}
                                 />
-                            </div>
-
-                            <div className="lg:col-span-2">
-                                <Label>Ta'rif (RU)</Label>
-                                <TextArea
-                                    value={formState.productDescRu}
-                                    onChange={(value) => setFormState({ ...formState, productDescRu: value })}
-                                    error={formErrors.productDescRu}
+                                <InputBlock
+                                    label="Mahsulot nomi (RU)"
+                                    name="productNameRu"
+                                    value={formState.productNameRu}
+                                    onChange={handleChange}
+                                    error={formErrors.productNameRu}
                                 />
-                            </div>
-                            <div className="col-span-1">
-                                <Label>Do‘kon tanlang</Label>
-                                <Select
-                                    options={shopOptions}
-                                    value={formState.productShopId}
-                                    onChange={(val) => {
-                                        setFormState((prev) => ({ ...prev, productShopId: val }));
-                                        validateField("productShopId", val);
-                                    }}
-                                    error={formErrors.productShopId}
+                                <InputBlock
+                                    label="Narxi"
+                                    name="productPrice"
+                                    value={formState.productPrice}
+                                    onChange={handleChange}
+                                    type="number"
+                                    error={formErrors.productPrice}
                                 />
-                            </div>
-
-                            <div className="col-span-1">
-                                <Label>Kategoriya</Label>
-                                <Select
-                                    options={categoryOptions}
-                                    value={formState.productCategory}
-                                    onChange={(val) => {
-                                        setFormState({ ...formState, productCategory: val, productSubCategory: "" });
-                                    }}
-                                    error={formErrors.productCategory}
+                                <InputBlock
+                                    label="Soni"
+                                    name="productCount"
+                                    value={formState.productCount}
+                                    onChange={handleChange}
+                                    type="number"
+                                    error={formErrors.productCount}
                                 />
-                            </div>
-
-                            <div className="col-span-1">
-                                <Label>Subkategoriya</Label>
-                                <Select
-                                    options={subCategoryOptions}
-                                    value={formState.productSubCategory}
-                                    onChange={(val) => setFormState({ ...formState, productSubCategory: val })}
-                                    disabled={subCategoryOptions.length === 0}
-                                    error={formErrors.productSubCategory}
+                                <InputBlock
+                                    label="Chegirma"
+                                    name="productDiscounted"
+                                    value={formState.productDiscounted}
+                                    onChange={handleChange}
+                                    type="number"
+                                    error={formErrors.productDiscounted}
                                 />
-                            </div>
+                                <InputBlock
+                                    label="Kafolat muddati (oy)"
+                                    name="productTerm"
+                                    value={formState.productTerm}
+                                    onChange={handleChange}
+                                    type="number"
+                                    error={formErrors.productTerm}
+                                />
+                            </>
+                        )}
 
+
+                        {step === 2 && (
+                            <>
+                                <div className="lg:col-span-2">
+                                    <Label>Ta'rif (UZ)</Label>
+                                    <TextArea
+                                        value={formState.productDescUz}
+                                        onChange={(value) => setFormState({ ...formState, productDescUz: value })}
+                                        error={formErrors.productDescUz}
+                                    />
+                                </div>
+
+                                <div className="lg:col-span-2">
+                                    <Label>Ta'rif (RU)</Label>
+                                    <TextArea
+                                        value={formState.productDescRu}
+                                        onChange={(value) => setFormState({ ...formState, productDescRu: value })}
+                                        error={formErrors.productDescRu}
+                                    />
+                                </div>
+                                <div className="col-span-1">
+                                    <Label>Do‘kon tanlang</Label>
+                                    <Select
+                                        options={shopOptions}
+                                        value={formState.productShopId}
+                                        onChange={(val) => {
+                                            setFormState((prev) => ({ ...prev, productShopId: val }));
+                                            validateField("productShopId", val);
+                                        }}
+                                        error={formErrors.productShopId}
+                                    />
+                                </div>
+
+                                <div className="col-span-1">
+                                    <Label>Kategoriya</Label>
+                                    <Select
+                                        options={categoryOptions}
+                                        value={formState.productCategory}
+                                        onChange={(val) => {
+                                            setFormState({ ...formState, productCategory: val, productSubCategory: "" });
+                                        }}
+                                        error={formErrors.productCategory}
+                                    />
+                                </div>
+
+                                <div className="col-span-1">
+                                    <Label>Subkategoriya</Label>
+                                    <Select
+                                        options={subCategoryOptions}
+                                        value={formState.productSubCategory}
+                                        onChange={(val) => setFormState({ ...formState, productSubCategory: val })}
+                                        disabled={subCategoryOptions.length === 0}
+                                        error={formErrors.productSubCategory}
+                                    />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <Label>Teglar</Label>
+                                    <Select
+                                        options={tagOptions}
+                                        value={tagOptions.filter(tag => formState.productTags.includes(tag.value))} // ✅ to‘g‘ri ko‘rsatish
+                                        onChange={(val) => {
+                                            const selected = Array.isArray(val) ? val.map((v) => v.value) : [];
+                                            setFormState({ ...formState, productTags: selected });
+                                            validateField("productTags", selected);
+                                        }}
+                                        isMulti={true}
+                                        error={formErrors.productTags}
+                                    />
+
+                                </div>
+                            </>
+                        )}
+
+
+                        {step === 3 && (
                             <div className="col-span-2">
-                                <Label>Teglar</Label>
-                                <Select
-                                    options={tagOptions}
-                                    value={tagOptions.filter(tag => formState.productTags.includes(tag.value))} // ✅ to‘g‘ri ko‘rsatish
-                                    onChange={(val) => {
-                                        const selected = Array.isArray(val) ? val.map((v) => v.value) : [];
-                                        setFormState({ ...formState, productTags: selected });
-                                        validateField("productTags", selected);
-                                    }}
-                                    isMulti={true}
-                                    error={formErrors.productTags}
+                                <p className="text-sm font-medium mb-2 text-gray-700 dark:text-white">Rasmlar</p>
+                                <ImageUploader
+                                    onSuccess={(urls) => setImages(urls)}
+                                    initialUrls={images} // yoki selectedB2BProduct?.images
                                 />
 
+                                {formErrors.images && (
+                                    <p className="mt-1 text-sm text-red-500">{formErrors.images}</p>
+                                )}
                             </div>
-                        </>
-                    )}
+                        )}
 
-
-                    {step === 3 && (
-                        <div className="col-span-2">
-                            <p className="text-sm font-medium mb-2 text-gray-700 dark:text-white">Rasmlar</p>
-                            <ImageUploader
-  onSuccess={(urls) => setImages(urls)}
-  initialUrls={images} // yoki selectedB2BProduct?.images
-/>
-
-                            {formErrors.images && (
-                                <p className="mt-1 text-sm text-red-500">{formErrors.images}</p>
-                            )}
-                        </div>
-                    )}
-
-                </div>
-
-                <div className="flex justify-between gap-3 mt-6">
-                    <Button variant="outline" type="button" onClick={onClose}>Bekor qilish</Button>
-                    <div className="flex gap-3">
-                        {step > 1 && <Button variant="custom" onClick={prevStep} type="button"
-
-                        >Ortga</Button>}
-                        {step < 3 && <Button variant="custom" onClick={nextStep} type="button"
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#fd521c] hover:bg-[#e64816] rounded-lg"
-
-                        >Keyingi</Button>}
-                        {step === 3 && <Button type="submit" variant="custom" disabled={isLoading}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#fd521c] hover:bg-[#e64816] rounded-lg"
-
-                        >
-                            {isLoading ? "Yuborilmoqda..." : "Saqlash"}
-                        </Button>}
                     </div>
-                </div>
-            </form>
-        </Modal>
+
+                    <div className="flex justify-between gap-3 mt-6">
+                        <Button variant="outline" type="button" onClick={onClose}>Bekor qilish</Button>
+                        <div className="flex gap-3">
+                            {step > 1 && <Button variant="custom" onClick={prevStep} type="button"
+
+                            >Ortga</Button>}
+                            {step < 3 && <Button variant="custom" onClick={nextStep} type="button"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#fd521c] hover:bg-[#e64816] rounded-lg"
+
+                            >Keyingi</Button>}
+                            {step === 3 && <Button type="submit" variant="custom" disabled={isLoading}
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#fd521c] hover:bg-[#e64816] rounded-lg"
+
+                            >
+                                {isLoading ? "Yuborilmoqda..." : "Saqlash"}
+                            </Button>}
+                        </div>
+                    </div>
+                </form>
+            </Modal>
+            {/* <SkuCreateModal
+                isOpen={showSkuModal}
+                onClose={() => setShowSkuModal(false)}
+                product={createdProduct}
+                sellerId={sellerId}
+            /> */}
+
+        </>
     );
 }
 

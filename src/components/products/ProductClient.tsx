@@ -13,12 +13,16 @@ import ProductCreateModal from "./ProductCreateModal";
 import { useShopsBySellerId } from "@/hooks/useShopsBySellerId";
 import { ProductCard } from "./ProductCard";
 import SkeletonCard from "../ui/spinner/SkeletonCard";
+import SkuCreateModal from "./SkuClient/SkuCreateModal";
 
 export default function ProductClient() {
     const { seller } = useAuthStore();
     const sellerId = seller?.id;
     const [selectedShopId, setSelectedShopId] = useState<string>("all");
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [createdProduct, setCreatedProduct] = useState<any>(null);
+    const [showSkuModal, setShowSkuModal] = useState(false);
 
     const { data: shops = [] } = useShopsBySellerId(sellerId.toString());
     const { data: sellerProducts, isLoading: isLoadingSeller } = useProductsBySellerId(sellerId);
@@ -29,20 +33,20 @@ export default function ProductClient() {
     if (!seller) return null;
 
     const isLoading = selectedShopId === "all" ? isLoadingSeller : isLoadingShop;
-const currentProducts =
-  selectedShopId === "all"
-    ? sellerProducts ?? []
-    : (shopProducts as any)?.Products ?? [];
+    const currentProducts =
+        selectedShopId === "all"
+            ? sellerProducts ?? []
+            : (shopProducts as any)?.Products ?? [];
 
 
-    console.log('currentProducts :', currentProducts);
     const shopOptions = [
         { label: "Barcha do‘konlar", value: "all" },
-        ...shops.map((shop) => ({
+        ...(Array.isArray(shops) ? shops : []).map((shop) => ({
             label: shop.name,
             value: shop.id.toString(),
         })),
     ];
+
 
     return (
         <div>
@@ -55,13 +59,13 @@ const currentProducts =
 
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                         {/* Select */}
-<Select
-  options={shopOptions}
-  value="all"
-  onChange={(val: any) => setSelectedShopId(val)}
-  className="w-[180px]"
-  {...({} as any)} // <-- build uchun workaround
-/>
+                        <Select
+                            options={shopOptions}
+                            value="all"
+                            onChange={(val: any) => setSelectedShopId(val)}
+                            className="w-[180px]"
+                            {...({} as any)}
+                        />
 
 
                         <Button
@@ -105,7 +109,19 @@ const currentProducts =
             <ProductCreateModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
+                onProductCreated={(product) => {
+                    setCreatedProduct(product);      // product ID va boshqa ma'lumotlar
+                    setShowSkuModal(true);          // Sku modalni ochish
+                }}
+
             />
+            <SkuCreateModal
+                isOpen={showSkuModal}
+                onClose={() => setShowSkuModal(false)}
+                product={createdProduct}
+                sellerId={sellerId}
+            />
+
         </div>
     );
 }

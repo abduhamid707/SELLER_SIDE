@@ -48,7 +48,10 @@ const navItems: NavItem[] = [
   {
     icon: <Boxes size={18} />,
     name: "Mahsulotlar",
-    path: "/products",
+    subItems: [
+      { name: "Barcha Mahsulotlar", path: "/products" },
+      { name: "SKUs", path: "/products/skus" },
+    ]
   },
   {
     icon: <UserCircleIcon />,
