@@ -14,6 +14,9 @@ import { useShopsBySellerId } from "@/hooks/useShopsBySellerId";
 import { ProductCard } from "./ProductCard";
 import SkeletonCard from "../ui/spinner/SkeletonCard";
 import SkuCreateModal from "./SkuClient/SkuCreateModal";
+import ProductEditModal from "./ProductEditModal";
+import { useCategories } from "@/hooks/category/useCategories";
+import { useProductTags } from "@/hooks/tag/useProductTags";
 
 export default function ProductClient() {
     const { seller } = useAuthStore();
@@ -24,6 +27,9 @@ export default function ProductClient() {
     const [createdProduct, setCreatedProduct] = useState<any>(null);
     const [showSkuModal, setShowSkuModal] = useState(false);
 
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
     const { data: shops = [] } = useShopsBySellerId(sellerId.toString());
     const { data: sellerProducts, isLoading: isLoadingSeller } = useProductsBySellerId(sellerId);
     const { data: shopProducts, isLoading: isLoadingShop } = useProductsByShopId(
@@ -31,6 +37,14 @@ export default function ProductClient() {
     );
 
     if (!seller) return null;
+
+
+
+    const handleEdit = (product: any) => {
+        setSelectedProduct(product);
+        setEditModalOpen(true);
+    };
+
 
     const isLoading = selectedShopId === "all" ? isLoadingSeller : isLoadingShop;
     const currentProducts =
@@ -46,6 +60,25 @@ export default function ProductClient() {
             value: shop.id.toString(),
         })),
     ];
+    const { categories } = useCategories();
+    const { tags: tagOptionsRaw } = useProductTags();
+    const tagOptions = tagOptionsRaw.map((tag) => {
+        const nameArray = Array.isArray(tag.name) ? tag.name : [];
+        const uzName = nameArray.find((n) => n.startsWith("uz_UZ"));
+        const label = uzName ? uzName.split(":")[1]?.trim() : tag.code;
+
+        return {
+            label: label || tag.code,
+            value: tag.code,
+        };
+    });
+
+    // Format category options
+    const categoryOptions = categories.map((cat) => ({
+        value: cat.id,
+        label: Array.isArray(cat.name) ? cat.name[0]?.split(":")[1] : cat.name,
+    }));
+
 
 
     return (
@@ -98,7 +131,7 @@ export default function ProductClient() {
                                 <ProductCard
                                     key={product.id}
                                     product={product}
-                                    onEdit={() => console.log("Edit product", product)}
+                                    onEdit={handleEdit}
                                 />
                             ))}
                         </div>
@@ -121,6 +154,17 @@ export default function ProductClient() {
                 product={createdProduct}
                 sellerId={sellerId}
             />
+            {selectedProduct && (
+                <ProductEditModal
+                    isOpen={editModalOpen}
+                    onClose={() => setEditModalOpen(false)}
+                    product={selectedProduct}
+                    sellerId={sellerId}
+                    shopOptions={shopOptions}
+                    categoryOptions={categoryOptions}
+                    tagOptions={tagOptions}
+                />
+            )}
 
         </div>
     );

@@ -36,7 +36,6 @@ export default function ShopEditModal({
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [imageUrl, setImageUrl] = useState(shop.image || "");
 
-
     const [formState, setFormState] = useState({
         name: shop.name || "",
         url: shop.url || "",

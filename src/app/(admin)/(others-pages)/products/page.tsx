@@ -17,7 +17,6 @@ export default function ProductPage() {
         <PageBreadcrumb pageTitle="Mahsulotlar" />
         <ProductClient />
       </ProtectedRoute>
-
     </>
   );
 }

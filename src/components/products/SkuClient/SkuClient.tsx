@@ -6,17 +6,21 @@ import { useSkusByProductId } from "@/hooks/skus/useSkus";
 import Image from "next/image";
 import { PencilIcon, TrashIcon, EyeIcon } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
+import SkuEditModal from "./SkuEditModal";
 export default function SkusClient({ productId }) {
     const { seller } = useAuthStore();
     const { data, isLoading } = useSkusByProductId(productId);
     const skus = data?.data ?? [];
 
     const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [selectedSku, setSelectedSku] = useState<any>(null); // tahrirlanadigan sku
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const handleEdit = (sku: any) => {
-        console.log("Edit:", sku);
-        // TODO: Open edit modal with sku data
+        setSelectedSku(sku);
+        setIsEditModalOpen(true);
     };
+
 
     const handleDelete = (sku: any) => {
         console.log("Delete:", sku);
@@ -130,6 +134,19 @@ export default function SkusClient({ productId }) {
                     </div>
                 </Modal>
             )}
+
+            {selectedSku && (
+                <SkuEditModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => {
+                        setIsEditModalOpen(false);
+                        setSelectedSku(null);
+                    }}
+                    sku={selectedSku}
+                    sellerId={seller?.id}
+                />
+            )}
+
         </div>
     );
 }

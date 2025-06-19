@@ -50,3 +50,17 @@ export const productSchema = z.object({
   productTags: z.array(z.string()).optional(),
   images: z.array(z.string().url("Rasm URL noto‘g‘ri.")).min(1, "Hech bo‘lmaganda bitta rasm yuklash kerak."),
 });
+
+
+export const productEditSchema = z.object({
+  productNameUz: z.string().min(2),
+  productNameRu: z.string().min(2),
+  productPrice: z.string().refine((val) => !isNaN(Number(val))),
+  productCount: z.string().regex(/^\d+$/),
+  productDescUz: z.string().min(5),
+  productDescRu: z.string().optional(),
+  productTerm: z.string().regex(/^\d+$/),
+  productDiscounted: z.string().regex(/^\d*$/),
+  productTags: z.array(z.string()).optional(),
+  images: z.array(z.string().url()).min(1),
+});

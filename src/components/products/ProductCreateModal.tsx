@@ -61,8 +61,8 @@ export default function ProductCreateModal({
     const [images, setImages] = useState<string[]>([]);
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-    const [showSkuModal, setShowSkuModal] = useState(false);
-    const [createdProduct, setCreatedProduct] = useState<any>(null);
+    // const [showSkuModal, setShowSkuModal] = useState(false);
+    // const [createdProduct, setCreatedProduct] = useState<any>(null);
 
     const { categories } = useCategories();
 
