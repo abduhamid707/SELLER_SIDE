@@ -14,6 +14,7 @@ import { useProductTags } from "@/hooks/tag/useProductTags";
 import { productSchema } from "@/schemas/sellerSchema";
 import { useShopsBySellerId } from "@/hooks/useShopsBySellerId";
 import SkuCreateModal from "./SkuClient/SkuCreateModal";
+import TagSelect from "../form/TagSelect";
 
 type ProductFormState = {
     productNameUz: string;
@@ -310,15 +311,14 @@ export default function ProductCreateModal({
 
                                 <div className="col-span-2">
                                     <Label>Teglar</Label>
-                                    <Select
+                                    <TagSelect
                                         options={tagOptions}
-                                        value={tagOptions.filter(tag => formState.productTags.includes(tag.value))} // ✅ to‘g‘ri ko‘rsatish
-                                        onChange={(val) => {
-                                            const selected = Array.isArray(val) ? val.map((v) => v.value) : [];
-                                            setFormState({ ...formState, productTags: selected });
-                                            validateField("productTags", selected);
+                                        selectedValues={formState.productTags}
+                                        onChange={(newTags) => {
+                                            setFormState({ ...formState, productTags: newTags });
+                                            validateField("productTags", newTags);
                                         }}
-                                        isMulti={true}
+                                        allowCustomTags={true}
                                         error={formErrors.productTags}
                                     />
 
