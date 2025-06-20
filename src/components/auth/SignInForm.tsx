@@ -94,7 +94,7 @@ const handleLogin = async (e: React.FormEvent) => {
                 </Link>
               </div>
               <div>
-                <Button className="w-full" size="sm" type="submit">
+                <Button className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#fd521c] hover:bg-[#e64816] rounded-lg" size="sm" type="submit" variant="custom" >
                   Sign in
                 </Button>
               </div>
